@@ -1,0 +1,28 @@
+---
+- hosts: all
+  gather_facts: false
+  become: true
+  vars:
+  - install_path: /root/install
+  tasks:
+
+    - name: create file
+      file: 
+        path: "{{ install_path }}/bin/{{ item }}"
+        state: touch
+        owner: root
+        group: root
+        mode: '0700'
+      with_items: 
+        - "scripts1.sh"
+        - "scripts2.sh"
+        - "scripts3.sh"
+
+    - name: create different file
+      copy:
+        src: "/tmp/{{ item.filename }}"
+        dest: "{{ item.filepath }}"
+        mode: "0755"
+      with_items:
+        - { filename: "install.sh",      filepath: "{{ install_path }}/bin/" }
+        - { filename: "libpython2.7.so", filepath: "{{ install_path }}/lib/" }

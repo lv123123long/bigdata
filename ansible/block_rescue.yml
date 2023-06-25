@@ -1,0 +1,27 @@
+---
+- hosts: all
+  gather_facts: false
+  become: true
+  vars:
+  - install_path: /root/install
+  tasks:
+
+    - name: task1
+      block: 
+        - name: create a.txt
+          file: path={{ install_path }}/tmp/a.txt state=touch
+
+        - name: create b.txt
+          file: path={{ install_path }}/tmp/dir1/b.txt state=touch
+
+      rescue:
+        - name: clean file
+          file: path={{ install_path }}/tmp/{{ item }} state=absent
+          with_items:
+            - a.txt
+            - b.txt
+
+      always:
+        - name: always info
+          debug:
+            msg: "task always execute"

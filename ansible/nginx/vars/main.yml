@@ -1,0 +1,2 @@
+nginx_rpm: nginx-1.16.1-1.el7.ngx.x86_64.rpm
+nginxport: 8080

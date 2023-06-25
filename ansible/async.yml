@@ -1,0 +1,25 @@
+---
+- hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+
+    - name: sleep task 
+      shell: sleep 5
+      async: 10
+      poll: 0
+      register: res
+
+    # - name: xxx
+
+    - name: get async job status
+      async_status:
+        jid: "{{ res.ansible_job_id }}"
+      register: job_status
+      until: job_status.finished
+      retries: 20
+      delay: 1
+
+    - name: print job status
+      debug:
+        var: job_status

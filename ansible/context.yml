@@ -1,0 +1,23 @@
+---
+- hosts: all
+  become: true
+  vars:
+  - install_path: /root/install
+  tasks:
+
+    - name: get log file
+      stat: path="{{ install_path }}/log/run.log"
+      register: log_file
+
+    - name: fetch log file
+      fetch: 
+        src: "{{ install_path }}/log/run.log"
+        dest: "/tmp/all_log/{{ ansible_default_ipv4.address }}-run.log"
+        flat: true
+      register: fetch_result
+      when: log_file.stat.exists
+
+    - name: return fetch info
+      debug:
+        msg: "log file fetched successfully to {{ fetch_result.dest }}"
+      when: fetch_result.changed

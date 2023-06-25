@@ -1,0 +1,14 @@
+- name: cp
+  copy: src={{ nginx_rpm }} dest=/tmp/{{ nginx_rpm }}
+
+- name: install
+  yum: name=/tmp/{{ nginx_rpm }} state=present
+
+- name: conf
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  tags: nginxconf
+  notify: new conf to reload
+
+- name: start service
+  service: name=nginx state=started enabled=true
+
